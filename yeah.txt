@@ -1,0 +1,56 @@
+import random
+
+def is_prime(num):
+    if num <= 1:
+        return False
+    if num <= 3:
+        return True
+    if num % 2 == 0 or num % 3 == 0:
+        return False
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def generate_numbers(length):
+    return [random.randint(3, 9) for _ in range(length)]
+
+def generate_random_indices(length):
+    return [random.randint(0, length - 1) for _ in range(length)]
+
+def filter_primes(numbers):
+    return [num for num in numbers if is_prime(num)]
+
+def generate_new_numbers(length):
+    return [random.randint(0, length - 1) for _ in range(length)]
+
+def find_generation_with_two_primes():
+    numbers = generate_numbers(1000)
+    #print('First Generation Primes:', filter_primes(numbers))
+    generation = 2
+    while True:
+        try:
+            new_numbers = generate_random_indices(len(numbers))
+            primes = filter_primes(new_numbers)
+            #print(f'{generation}th Generation Primes:', primes)
+            if len(primes) == 2 or len(primes) <= 2:
+                #print("Found two primes in generation:", generation)
+                return generation
+            generation += 1
+            numbers = primes
+        except IndexError:
+            print("No primes found in the list.")
+            return None
+
+if __name__=='__main__':
+    generations_distribution = {}
+    for _ in range(1000):
+        generation = find_generation_with_two_primes()
+        if generation is not None:
+            generations_distribution[generation] = generations_distribution.get(generation, 0) + 1
+    
+    print("\nFrequency distribution for generations:")
+    for generation, frequency in generations_distribution.items():
+        print(f"Generation {generation}: {frequency} times")
